@@ -82,26 +82,25 @@ class CadastroLancamentos extends React.Component{
     editar =() =>{
        
 
-        const mensagens = this.validar();
+        const { descricao, valor, mes, ano, tipo, status, usuario, id } = this.state;
 
-        if(mensagens && mensagens.length>0){
-            mensagens.forEach( (mensagem, index)=> {
-                messages.mensagemErro(mensagem)
-            });
-            return false;
-        }
+        const lancamento = { descricao, valor, mes, ano, tipo, usuario, status, id };
+        
+        this.service
+            .editar(lancamento)
+            .then(response => {
+                this.props.history.push('/consulta-lancamentos')
+                messages.mensagemSucesso('Lançamento atualizado com sucesso!')
+            }).catch(error => {
+                messages.mensagemErro(error.response.data)
+            })
+    }
 
-        const{descricao, valor, mes, ano, tipo, status,usuario, id} = this.state
+    handleChange = (event) => {
+        const value = event.target.value;
+        const name = event.target.name;
 
-        const lancamento ={ descricao , valor, mes, ano, tipo, usuario,status, id}
-
-        this.service.editar(lancamento)
-              .then(response =>{
-                  messages.mensagemSucesso('Lançamento atualizado com sucesso')
-                  this.props.history.push('/consulta-lancamentos')
-              }).catch(error=>{
-                 messages.mensagemErro(error.response.data)
-              })
+        this.setState({ [name] : value })
     }
 
     render(){
